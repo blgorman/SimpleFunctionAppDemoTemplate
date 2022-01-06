@@ -29,7 +29,7 @@ namespace SimpleFunctionAppDemo
                 var sstpart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
                 var sst = sstpart.SharedStringTable;
                 var sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
-                var rowindex = 0;
+                var rowIndex = 0;
 
                 //parse out trainee data including name, email, course(s) and codes.
                 foreach (var r in sheetData.Elements<Row>())
@@ -64,32 +64,33 @@ namespace SimpleFunctionAppDemo
                         switch (columnRef?.ToUpper())
                         {
                             case "A":
-                                //Name
-                                var id = 0;
-                                int.TryParse(text, out id);
-                                fdpd.Id = id;
-                                break;
-                            case "B":
                                 //UniqueId
                                 fdpd.UniqueId = text;
                                 break;
-                            case "C":
+                            case "B":
                                 //Name
                                 fdpd.Name = text;
                                 break;
-                            case "D":
+                            case "C":
                                 //email
                                 fdpd.Email = text;
+                                break;
+                            default:
+                                //ignore
                                 break;
                         }
                     }
 
-                    if (!string.IsNullOrWhiteSpace(fdpd.UniqueId) && fdpd.Id > 0)
+                    if (!string.IsNullOrWhiteSpace(fdpd.UniqueId))
                     {
-                        log.LogInformation($"adding {fdpd.Id} - {fdpd.UniqueId} - {fdpd.Name} - {fdpd.Email}");
+                        log.LogInformation($"adding {fdpd.UniqueId} - {fdpd.Name} - {fdpd.Email}");
                         fileData.Add(fdpd);
                     }
-                    rowindex++;
+                    else
+                    {
+                        log.LogInformation($"Row [{rowIndex}] skipped for invalid/no data");
+                    }
+                    rowIndex++;
                 }
             }
 
@@ -99,7 +100,6 @@ namespace SimpleFunctionAppDemo
 
     public class FileDataPayload
     { 
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string UniqueId { get; set; }
