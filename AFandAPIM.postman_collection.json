@@ -1,0 +1,222 @@
+{
+	"info": {
+		"_postman_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+		"name": "AFandAPIM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Raw Function: Function1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/atom+xml;type=entry;charset=utf-8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{AZURE_FUNCTION_APP_NAME}}.azurewebsites.net/api/Function1?name={{Name}}",
+					"protocol": "https",
+					"host": [
+						"{{AZURE_FUNCTION_APP_NAME}}",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"Function1"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{Name}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RAW Function: GetPeople",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{AZURE_FUNCTION_APP_NAME}}.azurewebsites.net/api/GetPeople?code={{Get_People_Function_Key}}",
+					"protocol": "https",
+					"host": [
+						"{{AZURE_FUNCTION_APP_NAME}}",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"GetPeople"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{Get_People_Function_Key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "APIM: Public - Function 1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{PUBLIC_SUB_KEY}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{APIM_INSTANCE}}.azure-api.net/Public/Function1?name={{Name}}",
+					"protocol": "https",
+					"host": [
+						"{{APIM_INSTANCE}}",
+						"azure-api",
+						"net"
+					],
+					"path": [
+						"Public",
+						"Function1"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{Name}}"
+						}
+					]
+				},
+				"description": "test"
+			},
+			"response": []
+		},
+		{
+			"name": "APIM: Customers - GetPeople",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{CLIENT_SUB_KEY}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{APIM_INSTANCE}}.azure-api.net/Customers/GetPeople",
+					"protocol": "https",
+					"host": [
+						"{{APIM_INSTANCE}}",
+						"azure-api",
+						"net"
+					],
+					"path": [
+						"Customers",
+						"GetPeople"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "APIM: Customers - Get People With Filter",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{CLIENT_SUB_KEY}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{APIM_INSTANCE}}.azure-api.net/Customers/GetPeople?name=Smith",
+					"protocol": "https",
+					"host": [
+						"{{APIM_INSTANCE}}",
+						"azure-api",
+						"net"
+					],
+					"path": [
+						"Customers",
+						"GetPeople"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Smith"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "APIM: Vehicles - Get Hondas",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{VEHICLE_SUB_KEY}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{APIM_INSTANCE}}.azure-api.net/vehicles/vehicles/GetMakeForManufacturer/honda",
+					"protocol": "https",
+					"host": [
+						"{{APIM_INSTANCE}}",
+						"azure-api",
+						"net"
+					],
+					"path": [
+						"vehicles",
+						"vehicles",
+						"GetMakeForManufacturer",
+						"honda"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
