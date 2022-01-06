@@ -1,22 +1,26 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleFunctionAppDemo
 {
+    /***
+     * This class parses the sample xls files and spits out the list of payload objects
+    ***/
     public class ParseExcelFileData
     {
+        /***
+         * Requires the file as a stream
+         * Requires the logger to write info 
+         ***/
         public static async Task<List<FileDataPayload>> GetFileData(Stream stream, ILogger log)
         {
             var fileData = new List<FileDataPayload>();
             var text = string.Empty;
-            var index = -1;
             var columnRef = string.Empty;
             var success = false;
 
@@ -58,9 +62,11 @@ namespace SimpleFunctionAppDemo
                         if (!success) break;
                         if (index == 1)
                         {
+                            //ignore bad data
                             break;
                         }
 
+                        //Map the columns to the output payload object:
                         switch (columnRef?.ToUpper())
                         {
                             case "A":
@@ -83,12 +89,14 @@ namespace SimpleFunctionAppDemo
 
                     if (!string.IsNullOrWhiteSpace(fdpd.UniqueId))
                     {
-                        log.LogInformation($"adding {fdpd.UniqueId} - {fdpd.Name} - {fdpd.Email}");
+                        //output added row info:
+                        log.LogInformation($"adding row [{rowIndex}]|\t{fdpd.UniqueId} - {fdpd.Name} - {fdpd.Email}");
                         fileData.Add(fdpd);
                     }
                     else
                     {
-                        log.LogInformation($"Row [{rowIndex}] skipped for invalid/no data");
+                        //output skipped row index
+                        log.LogInformation($"skipping row [{rowIndex}\tInvalid or no data");
                     }
                     rowIndex++;
                 }

@@ -3,11 +3,9 @@
 using System;
 using System.IO;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
@@ -16,10 +14,12 @@ using Newtonsoft.Json;
 namespace SimpleFunctionAppDemo
 {
     //adapted from from serverless MCW
+    //Parse out the excel file using an event grid trigger input integration that fires from the event grid subscription on the storage account
     public static class ParseFileEventGridTrigger
     {
         private static HttpClient _client;
 
+        //parse out the blog name from the url:
         private static string GetBlobNameFromUrl(string bloblUrl)
         {
             var uri = new Uri(bloblUrl);
@@ -27,6 +27,7 @@ namespace SimpleFunctionAppDemo
             return cloudBlob.Name;
         }
 
+        //note: defaultStorageConnection must be set in the environment variables for the function app as `AzureWebJobsdefaultStorageConnection`
         [FunctionName("ParseFileEventGridTrigger")]
         public static void Run([EventGridTrigger]EventGridEvent eventGridEvent, 
                 [Blob(blobPath: "{data.url}", access: FileAccess.Read, Connection = "defaultStorageConnection")] Stream incomingFile, 
@@ -47,11 +48,14 @@ namespace SimpleFunctionAppDemo
                     log.LogInformation($"Processing {name}");
 
                     //process the file here:
-                    var data = ParseExcelFileData.GetFileData(incomingFile, log);
+                    var data = ParseExcelFileData.GetFileData(incomingFile, log).Result;
 
-                    //write to cosmos:
+                    //eventually, write document to cosmos:
                     var parsedDataJson = JsonConvert.SerializeObject(data);
-                    log.LogInformation($"parsedData:{Environment.NewLine}{parsedDataJson}");
+                    log.LogInformation(new string('*', 80));
+                    log.LogInformation($"parsedData:{Environment.NewLine}{parsedDataJson}{Environment.NewLine}{Environment.NewLine}");
+                    log.LogInformation(new string('*', 80));
+                    log.LogInformation($"{Environment.NewLine}");
                 }
             }
             catch (Exception ex)
