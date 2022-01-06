@@ -8,6 +8,8 @@ Either create the ARM template and leverage the link, or use the Deployment cent
 https://github.com/blgorman/SimpleFunctionAppDemo.git
 ```  
 
+>**Note:** that's not the same repo!
+
 ## Quick Info
 
 The following information may be useful to aid in your demonstrations
