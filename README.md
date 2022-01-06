@@ -18,6 +18,13 @@ The following information may be useful to aid in your demonstrations
   - Function1 (Anonymous access, the default function generated in a new Azure Function - pass your name in the query string or body)
   - GetPeople (A function that requires a function key along with the URL to return data.  The data is prefabricated with eight people. The people are four superheros, two Smiths and two Johnsons - you can filter the results by name of the person, such as `smith`).
 
+Additional functions:
+
+- Http Trigger xls parser
+  - ParseFileHTTPTrigger
+- EventGrid Trigger xls parser
+  - ParseFileEventGridTrigger
+
 ## A postman collection
 
 In order to easily query this function app, import the Postman collection that is included.  Also import the environment variables and update the variables to match your deployment.
