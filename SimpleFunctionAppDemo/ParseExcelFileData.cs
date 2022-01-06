@@ -29,6 +29,7 @@ namespace SimpleFunctionAppDemo
                 var sstpart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
                 var sst = sstpart.SharedStringTable;
                 var sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+                var rowindex = 0;
 
                 //parse out trainee data including name, email, course(s) and codes.
                 foreach (var r in sheetData.Elements<Row>())
@@ -49,7 +50,7 @@ namespace SimpleFunctionAppDemo
                             text = c?.CellValue?.Text ?? "";
                         }
 
-                        log.LogInformation($"Text: {text}");
+                        log.LogInformation($"RowIndex: {rowIndex}\t|CellIndex: {cellIndex}\t|Text: {text}");
 
                         columnRef = c?.CellReference?.Value?.Substring(0, 1) ?? "";
                         if (string.IsNullOrWhiteSpace(columnRef)) continue;
@@ -85,8 +86,10 @@ namespace SimpleFunctionAppDemo
 
                     if (!string.IsNullOrWhiteSpace(fdpd.UniqueId) && fdpd.Id > 0)
                     {
+                        log.LogInformation($"adding {fdpd.Id} - {fdpd.UniqueId} - {fdpd.Name} - {fdpd.Email}");
                         fileData.Add(fdpd);
                     }
+                    rowindex++;
                 }
             }
 
