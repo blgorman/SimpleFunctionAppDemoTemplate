@@ -38,7 +38,7 @@ namespace SimpleFunctionAppDemo
             {
                 foreach (var sampleData in data)
                 {
-                    var response = await _client.UpsertDocumentAsync(UriFactory.CreateDocumentUri(_databaseId, _collectionId, sampleData.UniqueId), sampleData);
+                    var response = await _client.UpsertDocumentAsync(UriFactory.CreateCollectionUri(_databaseId, _collectionId), sampleData);
                     _log.LogInformation($"Upsert complete for document: {sampleData.UniqueId}");
                 }
             }
