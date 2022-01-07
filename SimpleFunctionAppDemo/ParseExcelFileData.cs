@@ -34,6 +34,7 @@ namespace SimpleFunctionAppDemo
                 var sst = sstpart.SharedStringTable;
                 var sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
                 var rowIndex = 0;
+                var index = 0;
 
                 //parse out trainee data including name, email, course(s) and codes.
                 foreach (var r in sheetData.Elements<Row>())
