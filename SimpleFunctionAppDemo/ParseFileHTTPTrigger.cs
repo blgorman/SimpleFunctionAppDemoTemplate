@@ -21,7 +21,7 @@ namespace SimpleFunctionAppDemo
         private static BlobServiceClient _blobServiceClient;
         private static BlobContainerClient _blobContainerClient;
 
-        //note: defaultStorageConnection must be set in the environment variables for the function app as `AzureWebJobsdefaultStorageConnection`
+        //note: LogicAppStorageConnectionString must be set in the environment variables for the function app as `LogicAppStorageConnectionString`
         //note: ParsedDataLogicAppHttpEndpoint must be set in order to post back to a logic app to write to cosmos (or whatever you want to do with it).
         [FunctionName("ParseFileHTTPTrigger")]
         public static async Task<IActionResult> Run(
@@ -36,7 +36,15 @@ namespace SimpleFunctionAppDemo
             var payload = await req.Content.ReadAsAsync<ParseFilePayload>();
 
             //connect to azure storage using the SDK, not bindings
-            _storageAccountConnectionString = Environment.GetEnvironmentVariable("AzureWebJobsdefaultStorageConnection");
+            _storageAccountConnectionString = Environment.GetEnvironmentVariable("LogicAppStorageConnectionString");
+            if (_storageAccountConnectionString == null)
+            {
+                log.LogInformation("Connection string not matched/set/found");
+            }
+            else
+            {
+                log.LogInformation($"cnstr: {_storageAccountConnectionString.Substring(1, 10)}...");
+            }
             _blobServiceClient = new BlobServiceClient(_storageAccountConnectionString);
 
             //get the container
