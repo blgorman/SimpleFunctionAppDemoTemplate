@@ -63,6 +63,32 @@ namespace SimpleFunctionAppDemo
                     //write to cosmos [function bindings present, environment variable set at azure]
                     var databaseMethods = new DatabaseMethods(log);
                     await databaseMethods.UpsertSampleData(data);
+
+                    //could do this as well to the logic app and not have to write the cosmos code and not need the cosmos variables
+                    //in the function app
+                    //get data serialized and log it
+                    /*
+                    var parsedDataJson = JsonConvert.SerializeObject(data);
+                    log.LogInformation(new string('*', 80));
+                    log.LogInformation($"parsedData:{Environment.NewLine}{parsedDataJson}{Environment.NewLine}{Environment.NewLine}");
+                    log.LogInformation(new string('*', 80));
+                    log.LogInformation($"{Environment.NewLine}");
+
+                    //post to a logic app via HTTP endpoint and body
+                    var url = Environment.GetEnvironmentVariable("ParsedDataLogicAppHttpEndpoint");
+
+                    if (url == null)
+                    {
+                        throw new Exception("Url variable not set...please add logic app url to the environment variables");
+                    }
+
+                    var dataType = "application/json";
+                    var result = await _client.PostAsync(url, new StringContent(parsedDataJson, Encoding.UTF8, dataType));
+
+                    //get the response back from the logic app post
+                    var responseString = await result.Content.ReadAsStringAsync();
+                    log.LogInformation($"Logic app response: {responseString}");
+                    */
                 }
             }
             catch (Exception ex)
