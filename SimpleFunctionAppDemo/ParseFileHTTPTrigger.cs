@@ -21,8 +21,18 @@ namespace SimpleFunctionAppDemo
         private static BlobServiceClient _blobServiceClient;
         private static BlobContainerClient _blobContainerClient;
 
-        //note: LogicAppStorageConnectionString must be set in the environment variables for the function app as `LogicAppStorageConnectionString`
-        //note: ParsedDataLogicAppHttpEndpoint must be set in order to post back to a logic app to write to cosmos (or whatever you want to do with it).
+        /// <summary>
+        /// This function is triggered by HTTP Post [from a logic app or PostMan or web method, etc].
+        /// The post takes the data for the file information in the body [composed in a logic app for the demo]
+        /// The function then builds the plumbing to connect to storage via account key and gets the document by url
+        /// The function then calls to the common parse code to get the document to a list of FileDataPayload
+        /// 
+        /// note: LogicApp Storage Connection String must be set in the environment variables for the function app as `LogicAppStorageConnectionString`
+        /// note: `ParsedDataLogicAppHttpEndpoint` must be set in environment variables to the http endpoint of the callback logic app in order to post back to a logic app to write to cosmos (or whatever you want to do with the logic app).
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName("ParseFileHTTPTrigger")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequestMessage req,
@@ -61,13 +71,14 @@ namespace SimpleFunctionAppDemo
 
             var data = ParseExcelFileData.GetFileData(stream, log).Result;
 
-            //use this payload to post back to a logic app
+            //get data serialized and log it
             var parsedDataJson = JsonConvert.SerializeObject(data);
             log.LogInformation(new string('*', 80));
             log.LogInformation($"parsedData:{Environment.NewLine}{parsedDataJson}{Environment.NewLine}{Environment.NewLine}");
             log.LogInformation(new string('*', 80));
             log.LogInformation($"{Environment.NewLine}");
 
+            //post to a logic app via HTTP endpoint and body
             var url = Environment.GetEnvironmentVariable("ParsedDataLogicAppHttpEndpoint");
 
             if (url == null)
@@ -81,7 +92,7 @@ namespace SimpleFunctionAppDemo
 
             //get the response back from the logic app post
             var responseString = await result.Content.ReadAsStringAsync();
-            log.LogInformation("Logic app response: {responseString}");
+            log.LogInformation($"Logic app response: {responseString}");
 
             return new OkObjectResult("Success");
         }

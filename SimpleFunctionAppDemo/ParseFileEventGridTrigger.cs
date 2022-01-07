@@ -10,11 +10,21 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Text;
 
 namespace SimpleFunctionAppDemo
 {
     //adapted from from serverless MCW
     //Parse out the excel file using an event grid trigger input integration that fires from the event grid subscription on the storage account
+    /// <summary>
+    /// This method parses the document that is uploaded to storage
+    ///     must have event grid subscription on create of document at azure storage
+    ///     must have the integrations set for input bindings on the Function app
+    /// Once the document is parsed, the data is then upserted to cosmos
+    ///     must have the output bindings set for the function app to connect to cosmos
+    ///     must have the environment variables set to write to cosmos
+    /// </summary>
     public static class ParseFileEventGridTrigger
     {
         private static HttpClient _client;
@@ -29,7 +39,7 @@ namespace SimpleFunctionAppDemo
 
         //note: defaultStorageConnection must be set in the environment variables for the function app as `AzureWebJobsdefaultStorageConnection`
         [FunctionName("ParseFileEventGridTrigger")]
-        public static void Run([EventGridTrigger]EventGridEvent eventGridEvent, 
+        public static async Task Run([EventGridTrigger]EventGridEvent eventGridEvent, 
                 [Blob(blobPath: "{data.url}", access: FileAccess.Read, Connection = "defaultStorageConnection")] Stream incomingFile, 
                 ILogger log)
         {
@@ -50,12 +60,9 @@ namespace SimpleFunctionAppDemo
                     //process the file here:
                     var data = ParseExcelFileData.GetFileData(incomingFile, log).Result;
 
-                    //eventually, write document to cosmos:
-                    var parsedDataJson = JsonConvert.SerializeObject(data);
-                    log.LogInformation(new string('*', 80));
-                    log.LogInformation($"parsedData:{Environment.NewLine}{parsedDataJson}{Environment.NewLine}{Environment.NewLine}");
-                    log.LogInformation(new string('*', 80));
-                    log.LogInformation($"{Environment.NewLine}");
+                    //write to cosmos [function bindings present, environment variable set at azure]
+                    var databaseMethods = new DatabaseMethods(log);
+                    await databaseMethods.UpsertSampleData(data);
                 }
             }
             catch (Exception ex)
