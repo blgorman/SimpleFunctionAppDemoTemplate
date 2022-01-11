@@ -25,6 +25,24 @@ Additional functions:
 - EventGrid Trigger xls parser
   - ParseFileEventGridTrigger
 
+These functions model two ways to trigger a function app from an azure storage account - ParseFileEventGridTrigger happens directly from the event grid, and requires that you create the event grid subscription on your storage account to respond to blob storage create events.
+- ParseFileHTTPTrigger requires that you build a logic app that responds to the storage account blob created event (via event grid integration).  Then use the logic app to post the values from the parsed event info to the azure function via http post and details in the body of the request.
+
 ## A postman collection
 
 In order to easily query this function app, import the Postman collection that is included.  Also import the environment variables and update the variables to match your deployment.
+
+## Slides
+
+On 2022.01.11 I delivered a serverless precompiler talk at CodeMash. I have added the slides from that talk to this repo. 
+
+## References
+
+Some of the code and some of the concepts are ported and modified based on this [Serverless Architecture MCW Repository](https://github.com/microsoft/MCW-Serverless-architecture).  
+
+## Additional Links
+
+Some detailed information for serverless architectures can be found at the following links:
+
+- [Serverless apps: Architecture, patterns, and Azure implementation](https://docs.microsoft.com/dotnet/architecture/serverless/?WT.mc_id=AZ-MVP-5004334)
+
