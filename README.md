@@ -25,7 +25,10 @@ Additional functions:
 - EventGrid Trigger xls parser
   - ParseFileEventGridTrigger
 
-These functions model two ways to trigger a function app from an azure storage account - ParseFileEventGridTrigger happens directly from the event grid, and requires that you create the event grid subscription on your storage account to respond to blob storage create events.
+These functions model two ways to trigger a function app from an azure storage account  
+
+- ParseFileEventGridTrigger happens directly from the event grid, and requires that you create the event grid subscription on your storage account to respond to blob storage create events.  
+
 - ParseFileHTTPTrigger requires that you build a logic app that responds to the storage account blob created event (via event grid integration).  Then use the logic app to post the values from the parsed event info to the azure function via http post and details in the body of the request.
 
 ## A postman collection
